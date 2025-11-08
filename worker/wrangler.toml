@@ -1,6 +1,6 @@
 name = "meyou-gateway"
 main = "worker.js"
-compatibility_date = "2024-11-01"
+compatibility_date = "2025-11-01"   # (optional: bump to today)
 
 routes = [
   { pattern = "api.meyoustudios.com/*", zone_name = "meyoustudios.com" }
