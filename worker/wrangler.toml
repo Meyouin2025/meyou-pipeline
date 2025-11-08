@@ -1,5 +1,7 @@
 name = "meyou-gateway"        # EXACT slug from the Worker header (no spaces)
-main = "worker.js"
+main = "worker/worker.js"
 compatibility_date = "2025-11-01"
+account_id = "ebd4eae591a7992c3edb269e2fc49ae1"   # 👈 replace with your real ID
 
 # Omit routes here to avoid any conflicts; the route is already attached to this service.
+
