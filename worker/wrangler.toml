@@ -1,7 +1,9 @@
-name = "PASTE_THE_EXACT_SLUG_HERE"   # e.g., meyou-gateway
+# CHANGE THIS to the exact service slug from Cloudflare (no spaces)
+name = "meyou-gateway"
+
 main = "worker.js"
 compatibility_date = "2025-11-01"
 
-routes = [
-  { pattern = "api.meyoustudios.com/*", zone_name = "meyoustudios.com" }
-]
+# IMPORTANT: since the route already exists on this service,
+# we don't need to declare routes here. We are just replacing the code.
+# (Leaving routes out avoids any route-conflict noise during publish.)
