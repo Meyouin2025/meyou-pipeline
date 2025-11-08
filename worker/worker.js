@@ -2,6 +2,7 @@ export default {
   async fetch(request) {
     const url = new URL(request.url);
 
+    // CORS preflight
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
@@ -15,7 +16,7 @@ export default {
     if (url.pathname === "/api/ping") {
       return new Response(JSON.stringify({
         ok: true,
-        build: "MB-PIPELINE@FLIPPED",
+        build: "MB-PIPELINE@LIVE",   // <- changed label
         time: new Date().toISOString(),
         routes: ["/api/ping"]
       }), {
@@ -27,11 +28,15 @@ export default {
       });
     }
 
-    return new Response(JSON.stringify({ ok:false, error:"Not Matched", hint:"GET /api/ping" }), {
-      status: 404,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+    return new Response(JSON.stringify({
+      ok:false,
+      error:"Not Matched",
+      hint:"GET /api/ping"
+    }), {
+      status:404,
+      headers:{
+        "Content-Type":"application/json",
+        "Access-Control-Allow-Origin":"*",
         "Cache-Control": "no-store"
       }
     });
