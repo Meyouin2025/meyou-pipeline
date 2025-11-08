@@ -1,4 +1,4 @@
-name = "<EXACT_SERVICE_NAME>"
+name = "meyou-gateway"          # <- paste the EXACT slug here
 main = "worker.js"
 compatibility_date = "2025-11-01"
 
