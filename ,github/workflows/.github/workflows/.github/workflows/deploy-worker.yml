@@ -7,24 +7,20 @@ on:
       - "wrangler.toml"
       - ".github/workflows/deploy-worker.yml"
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Wrangler
-        run: npm i -g wrangler@4
-
-      - name: Deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.9H1gUeOjI3jlVgPRG9vOLOp8Z_pFHQ9wsnC2x00B }}
-          # Optional if not in wrangler.toml:
-          # CLOUDFLARE_ACCOUNT_ID: ${{ secrets.ebd4eae591a7992c3edb269e2fc49ae1 }}
-        run: |
-          set -e
-          wrangler deploy
-
+      - name: Deploy with Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.9H1gUeOjI3jlVgPRG9vOLOp8Z_pFHQ9wsnC2x00B }}
+          accountId: ${{ secrets.ebd4eae591a7992c3edb269e2fc49ae1
+ }}
+          workingDirectory: .
+          command: deploy
