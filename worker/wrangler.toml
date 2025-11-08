@@ -1,4 +1,4 @@
-name = "meyou-gateway"          # <- paste the EXACT slug here
+name = "PASTE_THE_EXACT_SLUG_HERE"   # e.g., meyou-gateway
 main = "worker.js"
 compatibility_date = "2025-11-01"
 
