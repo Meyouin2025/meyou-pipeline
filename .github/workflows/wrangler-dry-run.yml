@@ -1,0 +1,28 @@
+@'
+name: Deploy Worker
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "worker/**"
+      - ".github/workflows/deploy-worker.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{  }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: worker   # change/remove if your wrangler.toml is not in /worker
+          command: deploy
+'@ | Out-File -Encoding UTF8 .github\workflows\deploy-worker.yml
