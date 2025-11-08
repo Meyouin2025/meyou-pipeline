@@ -1,0 +1,66 @@
+name: Worker CI (Dry Run + Deploy)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "worker/**"
+      - "**/wrangler.toml"
+      - ".github/workflows/worker-ci.yml"
+  pull_request:
+    paths:
+      - "worker/**"
+      - "**/wrangler.toml"
+      - ".github/workflows/worker-ci.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: worker-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dry-run:
+    name: Wrangler Dry Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Wrangler
+        run: npm i -g wrangler@latest
+
+      - name: Locate wrangler.toml and dry-run
+        shell: bash
+        run: |
+          set -e
+          if [ -f worker/wrangler.toml ]; then
+            echo "Using worker/wrangler.toml"
+            (cd worker && wrangler deploy --dry-run)
+          elif [ -f wrangler.toml ]; then
+            echo "Using root wrangler.toml"
+            wrangler deploy --dry-run
+          else
+            echo "No wrangler.toml found (expected in worker/)."; exit 1
+          fi
+
+  deploy:
+    name: Deploy Worker
+    needs: dry-run
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish with Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: worker
+          command: deploy
