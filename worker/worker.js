@@ -4,7 +4,7 @@ export default {
     if (url.pathname === "/api/ping") {
       return new Response(JSON.stringify({
         ok: true,
-        build: build: "MB-PIPELINE@A1",
+        build: build: "MB-PIPELINE@LIVE",
         time: new Date().toISOString(),
         routes: ["/api/ping"]
       }), { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
