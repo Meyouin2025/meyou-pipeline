@@ -20,7 +20,7 @@ jobs:
       - name: Publish Worker
         uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.9H1gUeOjI3jlVgPRG9vOLOp8Z_pFHQ9wsnC2x00B }}
+          accountId: ${{ vars. ebd4eae591a7992c3edb269e2fc49ae1}}
           workingDirectory: worker   # <-- change/remove if wrangler.toml is elsewhere
           command: deploy
