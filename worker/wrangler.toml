@@ -1,9 +1,5 @@
-# CHANGE THIS to the exact service slug from Cloudflare (no spaces)
-name = "meyou-gateway"
-
+name = "meyou-gateway"        # EXACT slug from the Worker header (no spaces)
 main = "worker.js"
 compatibility_date = "2025-11-01"
 
-# IMPORTANT: since the route already exists on this service,
-# we don't need to declare routes here. We are just replacing the code.
-# (Leaving routes out avoids any route-conflict noise during publish.)
+# Omit routes here to avoid any conflicts; the route is already attached to this service.
