@@ -1,7 +1,8 @@
 name: Deploy Worker
+
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
     paths:
       - "worker/**"
       - "wrangler.toml"
@@ -16,6 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Preflight secrets
+        run: |
+          [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] || (echo "❌ Missing secret: CLOUDFLARE_API_TOKEN" && exit 1)
+          [ -n "${{ secrets.CF_ACCOUNT_ID }}" ] || (echo "❌ Missing secret: CF_ACCOUNT_ID" && exit 1)
+          echo "✅ Secrets present."
+
       - name: Deploy with Wrangler
         uses: cloudflare/wrangler-action@v3
         with:
