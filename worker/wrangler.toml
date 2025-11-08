@@ -1,4 +1,4 @@
-name = "<EXACT_SERVICE_NAME_FROM_CF>"
+name = "<EXACT_SERVICE_NAME>"
 main = "worker.js"
 compatibility_date = "2025-11-01"
 
