@@ -21,8 +21,8 @@ jobs:
       - name: Publish Worker
         uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{  }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          apiToken: ${{ secrets.9H1gUeOjI3jlVgPRG9vOLOp8Z_pFHQ9wsnC2x00B }}
+          accountId: ${{ secrets.ebd4eae591a7992c3edb269e2fc49ae1 }}
           workingDirectory: worker   # change/remove if your wrangler.toml is not in /worker
           command: deploy
 '@ | Out-File -Encoding UTF8 .github\workflows\deploy-worker.yml
