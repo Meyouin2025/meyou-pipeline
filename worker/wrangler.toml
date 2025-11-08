@@ -1,6 +1,6 @@
-name = "meyou-gateway"
+name = "<that exact service name>"
 main = "worker.js"
-compatibility_date = "2025-11-01"   # (optional: bump to today)
+compatibility_date = "2025-11-01"
 
 routes = [
   { pattern = "api.meyoustudios.com/*", zone_name = "meyoustudios.com" }
