@@ -1,38 +1,23 @@
-name: Diagnose Worker
+name: Deploy Worker
 
 on:
-  workflow_dispatch:
   push:
     branches: [ "main" ]
     paths:
-      - ".github/workflows/diagnose-worker.yml"
-      - "wrangler.toml"
       - "worker/**"
+      - "wrangler.toml"
+      - ".github/workflows/deploy-worker.yml"
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
-  diag:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      # 1) Show branch, repo root, and files so we know we’re on the right commit
-      - name: Show context & tree
-        run: |
-          echo "GITHUB_REF=$GITHUB_REF"
-          echo "GITHUB_SHA=$GITHUB_SHA"
-          echo "PWD=$(pwd)"
-          ls -la
-          echo "---- .github/workflows ----"
-          ls -la .github/workflows || true
-          echo "---- find worker.js ----"
-          find . -maxdepth 3 -type f -name "worker.js" -print || true
-          echo "---- show wrangler.toml ----"
-          if [ -f wrangler.toml ]; then cat wrangler.toml; else echo "NO wrangler.toml at repo root"; fi
-
-      # 2) Verify secrets are actually visible to Actions
       - name: Preflight secrets
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -42,8 +27,10 @@ jobs:
           [ -n "$CF_ID" ]    || (echo "❌ Missing secret: CF_ACCOUNT_ID" && exit 1)
           echo "✅ Secrets present."
 
-      # 3) Install Wrangler just to check version (no deploy yet)
-      - name: Install Wrangler & print version
-        run: |
-          npm i -g wrangler@4
-          wrangler --version
+      - name: Deploy with Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}   # remove this line if you put account_id in wrangler.toml
+          workingDirectory: .
+          command: deploy
