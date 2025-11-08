@@ -1,1 +1,6 @@
+      - name: Show wrangler.toml (debug)
+        run: cat wrangler.toml
+
+      - name: Wrangler whoami (debug)
+        run: npx wrangler whoami
 
