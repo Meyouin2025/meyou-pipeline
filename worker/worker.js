@@ -1,9 +1,7 @@
-// worker/worker.js
 export default {
   async fetch(request) {
     const url = new URL(request.url);
 
-    // CORS preflight
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
