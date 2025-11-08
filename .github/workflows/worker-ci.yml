@@ -12,6 +12,7 @@ on:
       - "worker/**"
       - "**/wrangler.toml"
       - ".github/workflows/worker-ci.yml"
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -26,21 +27,25 @@ jobs:
     name: Wrangler Dry Run
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Wrangler
-        run: npm i -g wrangler@latest
+      - name: Preflight (list files & show wrangler.toml location)
+        run: |
+          echo "Tree (top):"; ls -la
+          echo; echo "Tree (worker/):"; ls -la worker || true
+          echo; echo "Has worker/wrangler.toml?"; test -f worker/wrangler.toml && echo YES || echo NO
+          echo; echo "Has root wrangler.toml?"; test -f wrangler.toml && echo YES || echo NO
+          echo; echo "Show worker/wrangler.toml:"; (test -f worker/wrangler.toml && sed -n '1,120p' worker/wrangler.toml) || true
 
-      - name: Locate wrangler.toml and dry-run
+      - run: npm i -g wrangler@latest
+
+      - name: Dry-run
         shell: bash
         run: |
           set -e
           if [ -f worker/wrangler.toml ]; then
-            echo "Using worker/wrangler.toml"
             (cd worker && wrangler deploy --dry-run)
           elif [ -f wrangler.toml ]; then
-            echo "Using root wrangler.toml"
             wrangler deploy --dry-run
           else
             echo "No wrangler.toml found (expected in worker/)."; exit 1
@@ -51,11 +56,15 @@ jobs:
     needs: dry-run
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Preflight (list files & show wrangler.toml location)
+        run: |
+          echo "Tree (top):"; ls -la
+          echo; echo "Tree (worker/):"; ls -la worker || true
+          echo; echo "Has worker/wrangler.toml?"; test -f worker/wrangler.toml && echo YES || echo NO
+          echo; echo "Show worker/wrangler.toml:"; (test -f worker/wrangler.toml && sed -n '1,120p' worker/wrangler.toml) || true
 
       - name: Publish with Wrangler
         uses: cloudflare/wrangler-action@v3
