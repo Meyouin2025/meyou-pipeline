@@ -1,28 +1,41 @@
-@'
-name: Deploy Worker
+name: Wrangler Dry Run
 
 on:
   push:
     branches: [ main ]
     paths:
       - "worker/**"
-      - ".github/workflows/deploy-worker.yml"
+      - ".github/workflows/wrangler-dry-run.yml"
 
 permissions:
   contents: read
 
 jobs:
-  publish:
+  dry-run:
+    name: Wrangler Dry Run
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Publish Worker
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.9H1gUeOjI3jlVgPRG9vOLOp8Z_pFHQ9wsnC2x00B }}
-          accountId: ${{ secrets.ebd4eae591a7992c3edb269e2fc49ae1 }}
-          workingDirectory: worker   # change/remove if your wrangler.toml is not in /worker
-          command: deploy
-'@ | Out-File -Encoding UTF8 .github\workflows\deploy-worker.yml
+      - name: Preflight (list files & show wrangler.toml location)
+        run: |
+          echo "Tree (top):"; ls -la
+          echo; echo "Tree (worker/):"; ls -la worker || true
+          echo; echo "Has worker/wrangler.toml?"; test -f worker/wrangler.toml && echo YES || echo NO
+          echo; echo "Show worker/wrangler.toml:"; (test -f worker/wrangler.toml && sed -n '1,120p' worker/wrangler.toml) || true
+
+      - name: Install Wrangler
+        run: npm i -g wrangler@latest
+
+      - name: Dry-run
+        shell: bash
+        run: |
+          set -e
+          if [ -f worker/wrangler.toml ]; then
+            (cd worker && wrangler deploy --dry-run)
+          elif [ -f wrangler.toml ]; then
+            wrangler deploy --dry-run
+          else
+            echo "No wrangler.toml found (expected in worker/)."; exit 1
+          fi
