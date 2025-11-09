@@ -34,7 +34,6 @@ jobs:
           echo "Tree (top):"; ls -la
           echo; echo "Tree (worker/):"; ls -la worker || true
           echo; echo "Has worker/wrangler.toml?"; test -f worker/wrangler.toml && echo YES || echo NO
-          echo; echo "Has root wrangler.toml?"; test -f wrangler.toml && echo YES || echo NO
           echo; echo "Show worker/wrangler.toml:"; (test -f worker/wrangler.toml && sed -n '1,120p' worker/wrangler.toml) || true
 
       - run: npm i -g wrangler@latest
